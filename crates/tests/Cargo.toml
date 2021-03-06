@@ -20,7 +20,7 @@ gw-block-producer = { path = "../block-producer" }
 parking_lot = "0.11"
 anyhow = "1.0"
 blake2b-rs = "0.2"
-ckb-vm = { git = "https://github.com/nervosnetwork/ckb-vm.git", tag = "0.19.1", features = ["detect-asm"] }
+ckb-vm = { git = "https://github.com/nervosnetwork/ckb-vm.git", tag = "0.19.1" }
 thiserror = "1.0"
 lazy_static = "1.4"
 secp256k1 = { version = "0.20", features = ["recovery"] }

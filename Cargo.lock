@@ -808,13 +808,13 @@ dependencies = [
  "ckb-fixed-hash",
  "ckb-jsonrpc-types",
  "failure",
- "faster-hex 0.4.1",
  "gw-chain",
  "gw-common",
  "gw-config",
  "gw-generator",
  "gw-store",
  "gw-types",
+ "hex",
  "serde",
 ]
 

@@ -1,4 +1,3 @@
-use faster_hex::{hex_decode, hex_encode};
 use gw_types::{packed, prelude::*};
 use std::fmt::{self, Debug};
 use std::hash::{Hash, Hasher};
@@ -68,9 +67,10 @@ impl<'b> serde::de::Visitor<'b> for Byte32Visitor {
         if v.len() < 2 || &v.as_bytes()[0..2] != b"0x" || v.len() != 66 {
             return Err(E::invalid_value(serde::de::Unexpected::Str(v), &self));
         }
+        let decoded_bytes =
+            hex::decode(&v.as_bytes()[2..]).map_err(|e| E::custom(format_args!("{:?}", e)))?;
         let mut buffer = [0u8; 65]; // we checked length
-        hex_decode(&v.as_bytes()[2..], &mut buffer)
-            .map_err(|e| E::custom(format_args!("{:?}", e)))?;
+        buffer.copy_from_slice(&decoded_bytes);
         Ok(Byte65(buffer))
     }
 
@@ -90,8 +90,8 @@ impl serde::Serialize for Byte65 {
         let mut buffer = [0u8; 132];
         buffer[0] = b'0';
         buffer[1] = b'x';
-        hex_encode(&self.0, &mut buffer[2..])
-            .map_err(|e| serde::ser::Error::custom(&format!("{}", e)))?;
+        let encoded_bytes = hex::encode(&self.0);
+        buffer.copy_from_slice(encoded_bytes.as_bytes());
         serializer.serialize_str(unsafe { ::std::str::from_utf8_unchecked(&buffer) })
     }
 }

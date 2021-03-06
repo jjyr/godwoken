@@ -28,8 +28,7 @@ use gw_types::{
 };
 
 use ckb_vm::{
-    machine::asm::{AsmCoreMachine, AsmMachine},
-    DefaultMachineBuilder,
+    machine::DefaultCoreMachine, DefaultMachineBuilder, SparseMemory, TraceMachine, WXorXMemory,
 };
 
 // TODO ensure this value
@@ -357,7 +356,10 @@ impl Generator {
     ) -> Result<RunResult, TransactionError> {
         let mut run_result = RunResult::default();
         {
-            let core_machine = Box::<AsmCoreMachine>::default();
+            let core_machine =
+                DefaultCoreMachine::<u64, WXorXMemory<u64, SparseMemory<u64>>>::new_with_max_cycles(
+                    10000,
+                );
             let machine_builder =
                 DefaultMachineBuilder::new(core_machine).syscall(Box::new(L2Syscalls {
                     chain,
@@ -367,7 +369,7 @@ impl Generator {
                     result: &mut run_result,
                     code_store: state,
                 }));
-            let mut machine = AsmMachine::new(machine_builder.build(), None);
+            let mut machine = TraceMachine::new(machine_builder.build());
             let account_id = raw_tx.to_id().unpack();
             let script_hash = state.get_script_hash(account_id)?;
             let backend = self
