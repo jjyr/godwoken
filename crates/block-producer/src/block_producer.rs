@@ -3,7 +3,7 @@
 use crate::utils::{fill_tx_fee, CKBGenesisInfo};
 use crate::wallet::Wallet;
 use crate::{
-    poa::PoA,
+    poa::{PoA, ShouldIssueBlock},
     rpc_client::{DepositInfo, RPCClient},
 };
 use crate::{
@@ -211,7 +211,7 @@ impl BlockProducer {
         };
 
         // try issue next block
-        if self
+        if let ShouldIssueBlock::Yes = self
             .poa
             .should_issue_next_block(median_time, &poa_cell_input)
             .await?
@@ -286,7 +286,7 @@ impl BlockProducer {
         // send transaction
         match self.rpc_client.send_transaction(tx).await {
             Ok(tx_hash) => {
-                println!("Submitted l2 block in {:?}", tx_hash);
+                println!("\nSubmitted l2 block {} in tx {:?}\n", number, tx_hash);
             }
             Err(err) => {
                 eprintln!("Submitting l2 block error: {}", err);

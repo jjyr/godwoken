@@ -106,6 +106,12 @@ pub struct PoA {
     round_start_subtime: Option<Duration>,
 }
 
+pub enum ShouldIssueBlock {
+    Yes,
+    YesIfFull,
+    No,
+}
+
 impl PoA {
     pub fn new(
         client: RPCClient,
@@ -199,7 +205,7 @@ impl PoA {
         &mut self,
         median_time: Duration,
         poa_cell_input: &InputCellInfo,
-    ) -> Result<bool> {
+    ) -> Result<ShouldIssueBlock> {
         let PoAContext {
             poa_data,
             poa_setup,
@@ -213,7 +219,7 @@ impl PoA {
                 .saturating_add(poa_setup.round_intervals.try_into()?);
             if next_round_time > median_time.as_secs() {
                 // within current block produce round
-                return Ok(true);
+                return Ok(ShouldIssueBlock::YesIfFull);
             } else {
                 // reset current round
                 self.round_start_subtime = None;
@@ -242,9 +248,9 @@ impl PoA {
         // check next start time again
         if next_start_time <= median_time.as_secs() {
             self.round_start_subtime = Some(median_time);
-            return Ok(true);
+            return Ok(ShouldIssueBlock::Yes);
         }
-        Ok(false)
+        Ok(ShouldIssueBlock::No)
     }
 
     pub fn reset_current_round(&mut self) {
