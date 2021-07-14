@@ -68,6 +68,8 @@ pub struct BlockProducerConfig {
     pub withdrawal_cell_lock_dep: CellDep,
     pub l1_sudt_type_dep: CellDep,
     pub wallet_config: WalletConfig,
+    /// Directory to save debugging info of l1 transactions
+    pub debug_tx_dump_path: PathBuf,
 }
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]

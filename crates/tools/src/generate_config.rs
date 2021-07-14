@@ -205,6 +205,7 @@ pub fn generate_config(
         withdrawal_cell_lock_dep,
         l1_sudt_type_dep,
         wallet_config,
+        debug_tx_dump_path: "debug-tx-dump".into(),
     });
     let genesis: GenesisConfig = GenesisConfig {
         timestamp: genesis.timestamp,
