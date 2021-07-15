@@ -57,6 +57,8 @@ pub struct WalletConfig {
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct BlockProducerConfig {
     pub account_id: u32,
+    /// Directory to save debugging info of l1 transactions
+    pub debug_tx_dump_path: PathBuf,
     // cell deps
     pub rollup_cell_type_dep: CellDep,
     pub rollup_config_cell_dep: CellDep,
@@ -68,8 +70,6 @@ pub struct BlockProducerConfig {
     pub withdrawal_cell_lock_dep: CellDep,
     pub l1_sudt_type_dep: CellDep,
     pub wallet_config: WalletConfig,
-    /// Directory to save debugging info of l1 transactions
-    pub debug_tx_dump_path: PathBuf,
 }
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
